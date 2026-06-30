@@ -1,65 +1,166 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Code2, Camera, Film, Video, Layers, Music, 
+  ArrowUpRight, Mail, FileText 
+} from "lucide-react";
+
+const portfolioCards = [
+  { id: "software", title: "Software Engineering", desc: "Full-stack architecture, data structures, and crisp engineering interfaces.", icon: Code2, color: "from-blue-500 to-cyan-500", href: "/tech" },
+  { id: "photography", title: "Photography", desc: "Visual storytelling capturing street aesthetics and portrait realities.", icon: Camera, color: "from-amber-500 to-orange-500", href: "/creative/photography" },
+  { id: "videography", title: "Videography & Reels", desc: "Cinematic direction, script pacing, and visual production layout.", icon: Film, color: "from-purple-500 to-pink-500", href: "/creative/videography" },
+  { id: "editing", title: "Video Editing", desc: "Pacing dynamic breakdowns, motion graphics, and pristine audio layers.", icon: Video, color: "from-red-500 to-rose-500", href: "/creative/editing" },
+  { id: "design", title: "Graphic Design", desc: "Minimalist brand architectures, visual pacing, and event design posters.", icon: Layers, color: "from-emerald-500 to-teal-500", href: "/creative/design" },
+  { id: "music", title: "Music & Production", desc: "Acoustic vocals, studio drumming patterns, and rhythm structures.", icon: Music, color: "from-indigo-500 to-blue-500", href: "/creative/music" },
+];
+
+export default function HomePage() {
+  const [identityMode, setIdentityMode] = useState<"all" | "tech" | "creative">("all");
+
+  const filteredCards = portfolioCards.filter(card => {
+    if (identityMode === "tech") return card.id === "software";
+    if (identityMode === "creative") return card.id !== "software";
+    return true;
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="relative min-h-screen w-full bg-[#000000] text-[#f4f4f5] pb-24 font-sans overflow-x-hidden selection:bg-neutral-800">
+      
+      {/* Background Lighting Gradients */}
+      <div className="absolute top-0 left-1/4 -z-10 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[120px]" />
+      <div className="absolute top-1/3 right-1/4 -z-10 h-[600px] w-[600px] rounded-full bg-purple-500/10 blur-[150px]" />
+
+      {/* --- HERO SECTION --- */}
+      <section className="mx-auto max-w-6xl px-6 pt-32 text-center md:pt-40">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-neutral-900 px-3 py-1 text-xs text-neutral-400 backdrop-blur-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Available for Engineering & Creative Roles
+          </span>
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-6 text-5xl font-extrabold tracking-tight sm:text-7xl bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent"
+        >
+          Satyam Kumar
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mx-auto mt-4 max-w-2xl text-lg text-neutral-400 sm:text-xl font-light"
+        >
+          Software Engineer <span className="text-neutral-700">•</span> Creator <span className="text-neutral-700">•</span> Musician
+        </motion.p>
+
+        {/* Unified Brand Selector Switch */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mx-auto mt-10 flex w-fit gap-1 rounded-full border border-white/5 bg-neutral-900/60 backdrop-blur-md p-1"
+        >
+          {(["all", "tech", "creative"] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setIdentityMode(mode)}
+              className={`relative rounded-full px-5 py-1.5 text-xs font-medium uppercase tracking-wider transition-colors ${
+                identityMode === mode ? "text-black" : "text-neutral-400 hover:text-white"
+              }`}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+              {identityMode === mode && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 rounded-full bg-white"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">{mode === "all" ? "Unified Brand" : mode === "tech" ? "Technology" : "Creativity"}</span>
+            </button>
+          ))}
+        </motion.div>
+
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-10 flex flex-wrap justify-center gap-4"
+        >
+          <a href="#work" className="inline-flex h-11 items-center justify-center rounded-lg bg-white px-6 font-medium text-black hover:bg-neutral-200 transition-colors">
+            View My Work
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          <button className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-white/10 bg-neutral-900/50 px-5 font-medium text-white hover:bg-neutral-955 transition-colors">
+            <FileText size={16} /> Download Resume
+          </button>
+        </motion.div>
+      </section>
+
+      {/* --- WORK SHOWCASE MATRIX --- */}
+      <section id="work" className="mx-auto mt-32 max-w-6xl px-6">
+        <div className="flex flex-col justify-between border-b border-white/10 pb-6 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Selected Ventures</h2>
+            <p className="mt-1 text-sm text-neutral-500">A high-fidelity layout of my engineering builds and creative works.</p>
+          </div>
         </div>
-      </main>
+
+        <motion.div 
+          layout
+          className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredCards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <motion.a
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  href={card.href}
+                  key={card.id}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/5 bg-neutral-900/30 p-6 transition-all hover:border-white/10 hover:bg-neutral-900/60"
+                >
+                  <div>
+                    <div className={`w-fit rounded-lg bg-gradient-to-br ${card.color} p-2.5 text-white shadow-lg`}>
+                      <Icon size={20} />
+                    </div>
+                    <h3 className="mt-5 text-lg font-medium text-white">{card.title}</h3>
+                    <p className="mt-2 text-sm text-neutral-400 line-clamp-2 leading-relaxed">{card.desc}</p>
+                  </div>
+                  
+                  <div className="mt-6 flex items-center gap-1 text-xs font-medium text-neutral-500 group-hover:text-white transition-colors">
+                    Explore Space <ArrowUpRight size={14} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
+                </motion.a>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+      </section>
+
+      {/* --- FOOTER SOCIAL LINKS --- */}
+      <footer className="absolute bottom-6 left-0 right-0 mx-auto flex max-w-6xl items-center justify-between px-6 text-xs text-neutral-600">
+        <p>© 2026 Platform. Built with Next.js.</p>
+        <div className="flex gap-6 items-center">
+          <a href="https://github.com" target="_blank" className="hover:text-white transition-colors">GitHub</a>
+          <a href="https://linkedin.com" target="_blank" className="hover:text-white transition-colors">LinkedIn</a>
+          <a href="mailto:youremail@gmail.com" className="hover:text-white transition-colors flex items-center gap-1"><Mail size={14} /> Contact</a>
+        </div>
+      </footer>
+
     </div>
   );
 }
