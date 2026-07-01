@@ -31,6 +31,13 @@ export default function HomePage() {
   const [dbProjects, setDbProjects] = useState<LiveProject[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
+  // 📝 Recruiter Transmission Form States
+  const [senderName, setSenderName] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
+  const [senderMessage, setSenderMessage] = useState("");
+  const [selectedRating, setSelectedRating] = useState(5);
+  const [sendingMessage, setSendingMessage] = useState(false);
+
   // Hydrate Data from Cluster Endpoint on Init
   useEffect(() => {
     async function fetchLiveProjects() {
@@ -49,8 +56,42 @@ export default function HomePage() {
     fetchLiveProjects();
   }, []);
 
+  // 🚀 Inbound Message API Dispatcher
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSendingMessage(true);
+
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: senderName,
+          email: senderEmail,
+          message: senderMessage,
+          rating: selectedRating
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Message dispatched securely. Rating log stored inside cluster!");
+        setSenderName("");
+        setSenderEmail("");
+        setSenderMessage("");
+        setSelectedRating(5);
+      } else {
+        alert(data.error || "Failed to commit message data.");
+      }
+    } catch {
+      alert("Communication routing channel fault.");
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
   return (
-    <div className="relative min-h-screen w-full bg-[#000000] text-[#f4f4f5] pb-24 font-sans overflow-x-hidden selection:bg-neutral-800">
+    <div className="relative min-h-screen w-full bg-[#000000] text-[#f4f4f5] pb-40 font-sans overflow-x-hidden selection:bg-neutral-800">
       
       {/* Background Lighting Gradients */}
       <div className="absolute top-0 left-1/4 -z-10 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[120px]" />
@@ -238,6 +279,70 @@ export default function HomePage() {
             </motion.div>
           </div>
         )}
+      </section>
+
+      {/* --- 📥 RECRUITER TRANSMISSION NODE & RATING FORM --- */}
+      <section className="mx-auto mt-24 max-w-xl px-6 border-t border-white/5 pt-16">
+        <div className="text-center mb-8">
+          <h2 className="text-xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
+            <Mail size={18} className="text-blue-500" /> Secure Transmission Node
+          </h2>
+          <p className="mt-1 text-xs text-neutral-500">Leave a project rating evaluation or dispatch communication parameters here.</p>
+        </div>
+
+        <form onSubmit={handleSendMessage} className="space-y-4 rounded-xl border border-white/5 bg-neutral-900/10 p-6 backdrop-blur-sm shadow-2xl">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-widest">Your Name</label>
+              <input 
+                type="text" required value={senderName} onChange={(e) => setSenderName(e.target.value)}
+                placeholder="e.g., Alex Carter" 
+                className="mt-2 h-10 w-full rounded-lg border border-white/5 bg-black px-4 text-sm text-white outline-none focus:border-white/20 transition-colors placeholder:text-neutral-700"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-widest">Callback Email</label>
+              <input 
+                type="email" required value={senderEmail} onChange={(e) => setSenderEmail(e.target.value)}
+                placeholder="alex@company.com" 
+                className="mt-2 h-10 w-full rounded-lg border border-white/5 bg-black px-4 text-sm text-white outline-none focus:border-white/20 transition-colors placeholder:text-neutral-700"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-widest block mb-2">Platform Rating Evaluation</label>
+            <div className="flex gap-1.5 items-center bg-black h-10 px-4 rounded-lg border border-white/5 w-fit">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  type="button"
+                  key={star}
+                  onClick={() => setSelectedRating(star)}
+                  className="text-sm outline-none transition-transform active:scale-95 text-neutral-700"
+                >
+                  <span className={star <= selectedRating ? "text-amber-400" : "text-neutral-700"}>★</span>
+                </button>
+              ))}
+              <span className="text-[11px] font-mono text-neutral-500 ml-2">({selectedRating}/5 Stars)</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-widest">Transmission Payload</label>
+            <textarea 
+              required rows={4} value={senderMessage} onChange={(e) => setSenderMessage(e.target.value)}
+              placeholder="Outline project parameters or roles engineering overview..." 
+              className="mt-2 w-full rounded-lg border border-white/5 bg-black p-4 text-sm text-white outline-none focus:border-white/20 transition-colors resize-none placeholder:text-neutral-700"
+            />
+          </div>
+
+          <button 
+            type="submit" disabled={sendingMessage}
+            className="h-10 w-full rounded-lg bg-white text-xs font-semibold uppercase tracking-wider text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 transition-colors flex items-center justify-center gap-2"
+          >
+            {sendingMessage ? "Broadcasting..." : "Dispatch Message"}
+          </button>
+        </form>
       </section>
 
       {/* --- FOOTER SOCIAL LINKS --- */}

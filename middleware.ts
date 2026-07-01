@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+// ✅ Using default export satisfies both Next.js compiler conventions perfectly
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Only run this security check on the admin dashboard route
@@ -11,7 +12,6 @@ export function middleware(request: NextRequest) {
 
     // If there is no token, or it doesn't match your secret environment key...
     if (!adminToken || !masterToken || adminToken !== masterToken) {
-      // Create a perfectly safe, absolute fallback URL using request.nextUrl
       const loginUrl = new URL("/admin/login", request.nextUrl.origin);
       return NextResponse.redirect(loginUrl);
     }
@@ -20,7 +20,6 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Tells Next.js to only trigger the middleware for admin routes
 export const config = {
   matcher: ["/admin/dashboard/:path*"],
 };
