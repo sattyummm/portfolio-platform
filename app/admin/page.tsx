@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 export default function AdminLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
@@ -25,6 +27,9 @@ export default function AdminLoginPage() {
 
       if (data.success) {
         setStatusMessage("Access Granted. Initializing Secure Dashboard Workspace...");
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+        }, 1000);
       } else {
         setStatusMessage(data.error || "Authentication verification failed.");
       }

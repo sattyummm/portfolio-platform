@@ -6,7 +6,7 @@ const ProjectSchema = new Schema({
   techStack: [{ type: String, index: true }],
   githubUrl: { type: String, default: '' },
   liveUrl: { type: String, default: '' },
-  coverImage: { type: String, required: true },
+  coverImage: { type: String, required: false },
   isFeatured: { type: Boolean, default: false, index: true },
   category: { type: String, default: 'SOFTWARE', immutable: true }
 }, { timestamps: true });
