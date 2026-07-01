@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Code2, Camera, Film, Video, Layers, Music, 
-  ArrowUpRight, Mail, FileText, Loader2, Database
+  Code2, Camera, Film, ArrowUpRight, Mail, FileText, Loader2, Database
 } from "lucide-react";
 
 // Structural Type Blueprint matching your Mongoose Cluster Schema
@@ -16,12 +15,24 @@ interface LiveProject {
   githubUrl?: string;
 }
 
+// Streamlined matrix matching exactly your two active multimedia sectors
 const staticCreativeCards = [
-  { id: "photography", title: "Photography", desc: "Visual storytelling capturing street aesthetics and portrait realities.", icon: Camera, color: "from-amber-500 to-orange-500", href: "/creative/photography" },
-  { id: "videography", title: "Videography & Reels", desc: "Cinematic direction, script pacing, and visual production layout.", icon: Film, color: "from-purple-500 to-pink-500", href: "/creative/videography" },
-  { id: "editing", title: "Video Editing", desc: "Pacing dynamic breakdowns, motion graphics, and pristine audio layers.", icon: Video, color: "from-red-500 to-rose-500", href: "/creative/editing" },
-  { id: "design", title: "Graphic Design", desc: "Minimalist brand architectures, visual pacing, and event design posters.", icon: Layers, color: "from-emerald-500 to-teal-500", href: "/creative/design" },
-  { id: "music", title: "Music & Production", desc: "Acoustic vocals, studio drumming patterns, and rhythm structures.", icon: Music, color: "from-indigo-500 to-blue-500", href: "/creative/music" },
+  { 
+    id: "photography", 
+    title: "Photography", 
+    desc: "Visual storytelling capturing street aesthetics, portrait realities, and uncompressed moments.", 
+    icon: Camera, 
+    color: "from-amber-500 to-orange-500", 
+    href: "/creative/photography" 
+  },
+  { 
+    id: "videography", 
+    title: "Videography & Editing", 
+    desc: "Cinematic short films, multi-ratio narrative direction, video editing layouts, and high-energy Reels.", 
+    icon: Film, 
+    color: "from-purple-500 to-pink-500", 
+    href: "/creative/videography" 
+  }
 ];
 
 export default function HomePage() {
@@ -246,7 +257,7 @@ export default function HomePage() {
               </div>
             )}
             
-            <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 max-w-4xl mx-auto">
               <AnimatePresence mode="popLayout">
                 {staticCreativeCards.map((card) => {
                   const Icon = card.icon;
@@ -259,13 +270,13 @@ export default function HomePage() {
                       transition={{ duration: 0.3 }}
                       href={card.href}
                       key={card.id}
-                      className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/5 bg-neutral-900/20 p-6 transition-all hover:border-white/10 hover:bg-neutral-900/60"
+                      className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/5 bg-neutral-900/20 p-6 transition-all hover:border-white/10 hover:bg-neutral-900/60 shadow-xl"
                     >
                       <div>
                         <div className={`w-fit rounded-lg bg-gradient-to-br ${card.color} p-2.5 text-white shadow-lg`}>
                           <Icon size={20} />
                         </div>
-                        <h3 className="mt-5 text-lg font-medium text-white">{card.title}</h3>
+                        <h3 className="mt-5 text-lg font-medium text-white group-hover:text-purple-400 transition-colors">{card.title}</h3>
                         <p className="mt-2 text-sm text-neutral-400 line-clamp-2 leading-relaxed font-light">{card.desc}</p>
                       </div>
                       
@@ -318,9 +329,11 @@ export default function HomePage() {
                   type="button"
                   key={star}
                   onClick={() => setSelectedRating(star)}
-                  className="text-sm outline-none transition-transform active:scale-95 text-neutral-700"
+                  className="text-sm outline-none transition-transform active:scale-95"
                 >
-                  <span className={star <= selectedRating ? "text-amber-400" : "text-neutral-700"}>★</span>
+                  <span className={star <= selectedRating ? "text-amber-400" : "text-neutral-700"}>
+                    ★
+                  </span>
                 </button>
               ))}
               <span className="text-[11px] font-mono text-neutral-500 ml-2">({selectedRating}/5 Stars)</span>
