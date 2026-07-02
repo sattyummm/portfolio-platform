@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 
-const ProjectSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  techStack: { type: [String], required: true },
-  githubUrl: { type: String, default: "" },
+const ExperienceSchema = new mongoose.Schema({
+  role: { type: String, required: true },
+  company: { type: String, required: true },
+  duration: { type: String, required: true },
+  bullets: { type: [String], required: true },
   createdAt: { type: Date, default: Date.now }
 });
 
-const Project = mongoose.models.Project || mongoose.model("Project", ProjectSchema);
+const Experience = mongoose.models.Experience || mongoose.model("Experience", ExperienceSchema);
 
 async function dbConnect() {
   if (mongoose.connection.readyState >= 1) return;
@@ -19,8 +19,8 @@ async function dbConnect() {
 export async function GET() {
   try {
     await dbConnect();
-    const projects = await Project.find().sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, data: projects });
+    const data = await Experience.find().sort({ createdAt: -1 });
+    return NextResponse.json({ success: true, data });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
@@ -29,17 +29,14 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     await dbConnect();
-    const { id, title, description, techStack, githubUrl } = await req.json();
-    const payload = { title, description, techStack, githubUrl };
-
-    // Safely verify if we are mutating a record row or creating a fresh array item
+    const { id, role, company, duration, bullets } = await req.json();
+    const payload = { role, company, duration, bullets };
     if (id && id.trim() !== "") {
-      const updated = await Project.findByIdAndUpdate(id.trim(), payload, { new: true });
+      const updated = await Experience.findByIdAndUpdate(id.trim(), payload, { new: true });
       return NextResponse.json({ success: true, data: updated });
     }
-
-    const newProject = await Project.create(payload);
-    return NextResponse.json({ success: true, data: newProject });
+    const created = await Experience.create(payload);
+    return NextResponse.json({ success: true, data: created });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
@@ -49,7 +46,7 @@ export async function DELETE(req: Request) {
   try {
     await dbConnect();
     const { id } = await req.json();
-    await Project.findByIdAndDelete(id);
+    await Experience.findByIdAndDelete(id);
     return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

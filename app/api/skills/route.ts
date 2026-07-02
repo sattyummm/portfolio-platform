@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 
-const ProjectSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  techStack: { type: [String], required: true },
-  githubUrl: { type: String, default: "" },
+const SkillSchema = new mongoose.Schema({
+  category: { type: String, required: true },
+  items: { type: [String], required: true },
   createdAt: { type: Date, default: Date.now }
 });
 
-const Project = mongoose.models.Project || mongoose.model("Project", ProjectSchema);
+const Skill = mongoose.models.Skill || mongoose.model("Skill", SkillSchema);
 
 async function dbConnect() {
   if (mongoose.connection.readyState >= 1) return;
@@ -19,8 +17,8 @@ async function dbConnect() {
 export async function GET() {
   try {
     await dbConnect();
-    const projects = await Project.find().sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, data: projects });
+    const data = await Skill.find().sort({ createdAt: 1 });
+    return NextResponse.json({ success: true, data });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
@@ -29,17 +27,13 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     await dbConnect();
-    const { id, title, description, techStack, githubUrl } = await req.json();
-    const payload = { title, description, techStack, githubUrl };
-
-    // Safely verify if we are mutating a record row or creating a fresh array item
+    const { id, category, items } = await req.json();
     if (id && id.trim() !== "") {
-      const updated = await Project.findByIdAndUpdate(id.trim(), payload, { new: true });
+      const updated = await Skill.findByIdAndUpdate(id.trim(), { category, items }, { new: true });
       return NextResponse.json({ success: true, data: updated });
     }
-
-    const newProject = await Project.create(payload);
-    return NextResponse.json({ success: true, data: newProject });
+    const created = await Skill.create({ category, items });
+    return NextResponse.json({ success: true, data: created });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
@@ -49,7 +43,7 @@ export async function DELETE(req: Request) {
   try {
     await dbConnect();
     const { id } = await req.json();
-    await Project.findByIdAndDelete(id);
+    await Skill.findByIdAndDelete(id);
     return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
